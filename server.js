@@ -4,9 +4,24 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 
+//ROUTES IMPORTS
+const dashboardRoutes = require('./routes/dashboard');
+const authRoutes = require('./routes/auth');
+
+//MODEL IMPORTS
+const User = require('./models/User');
+
+require('./config/passport')(passport);
+
+//MIDDLEWARE
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
+
+//ROUTES MIDDLEWARE
+app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/auth', authRoutes);
 
 //DB
 mongoose
@@ -14,14 +29,5 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-//ROUTES IMPORTS
-const dashboardRoutes = require('./routes/dashboard');
-const authRoutes = require('./routes/auth');
-
-//ROUTES MIDDLEWARE
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/auth', authRoutes);
-
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, console.log(`Server running on port ${PORT}`));
