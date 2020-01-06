@@ -35,8 +35,6 @@ exports.validateRegisterData = data => {
 exports.validateLoginData = data => {
   const errors = {};
 
-  let errors = {};
-
   if (isEmpty(data.email)) {
     errors.email = 'Email can not be empty';
   }

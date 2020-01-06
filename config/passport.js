@@ -1,5 +1,5 @@
 require('dotenv').config();
-const mongoose = require('mongoose');
+
 const jwtStrategy = require('passport-jwt').Strategy;
 const extractJwt = require('passport-jwt').ExtractJwt;
 
