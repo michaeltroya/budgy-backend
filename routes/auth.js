@@ -27,20 +27,26 @@ router.post('/register', (req, res) => {
     if (user) {
       res.status(400).json({ username: 'Username already in use' });
     } else {
-      const userCredentials = new User({ username: req.body.username, email: req.body.email, password: req.body.password });
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(userCredentials.password, salt, (err, hash) => {
-          if (err) {
-            console.log(err);
-          }
-          userCredentials.password = hash;
-          userCredentials
-            .save()
-            .then(user => {
-              res.status(201).json(user);
-            })
-            .catch(err => console.log(err));
-        });
+      User.findOne({ email: newUser.email }).then(user => {
+        if (user) {
+          res.status(400).json({ email: 'Email already in use' });
+        } else {
+          const userCredentials = new User({ username: req.body.username, email: req.body.email, password: req.body.password });
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(userCredentials.password, salt, (err, hash) => {
+              if (err) {
+                console.log(err);
+              }
+              userCredentials.password = hash;
+              userCredentials
+                .save()
+                .then(user => {
+                  res.status(201).json(user);
+                })
+                .catch(err => console.log(err));
+            });
+          });
+        }
       });
     }
   });
