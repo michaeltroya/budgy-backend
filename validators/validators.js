@@ -2,27 +2,23 @@ const mongoose = require('mongoose');
 const isEmpty = require('is-empty');
 const validator = require('validator');
 
-exports.validateRegisterData = data => {
+exports.validateRegisterData = user => {
   const errors = {};
 
-  if (isEmpty(data.email)) {
+  if (isEmpty(user.email)) {
     errors.email = 'Email can not be empty';
-  } else if (!validator.isEmail(data.email)) {
+  } else if (!validator.isEmail(user.email)) {
     errors.email = 'Must be a valid email';
   }
-  if (isEmpty(data.password)) {
+  if (isEmpty(user.password)) {
     errors.password = 'Password can not be empty';
   }
 
-  if (data.password !== data.confirmPassword) {
+  if (user.password !== user.confirmPassword) {
     errors.password = 'Passwords must match';
   }
 
-  if (isEmpty(data.handle)) {
-    errors.handle = 'Handle can not be empty';
-  }
-
-  if (isEmpty(data.username)) {
+  if (isEmpty(user.username)) {
     errors.username = 'Username can not be empty';
   }
 
@@ -32,13 +28,13 @@ exports.validateRegisterData = data => {
   };
 };
 
-exports.validateLoginData = data => {
+exports.validateLoginData = user => {
   const errors = {};
 
-  if (isEmpty(data.email)) {
+  if (isEmpty(user.email)) {
     errors.email = 'Email can not be empty';
   }
-  if (isEmpty(data.password)) {
+  if (isEmpty(user.password)) {
     errors.password = 'Password can not be empty';
   }
   return {
