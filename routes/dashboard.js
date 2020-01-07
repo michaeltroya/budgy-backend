@@ -13,13 +13,8 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
   } = req;
 
   Dashboard.findOne({ username })
-    .then(dashboard => {
-      return res.json(dashboard);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({ error: err.code });
-    });
+    .then(dashboard => res.json(dashboard))
+    .catch(err => res.status(500).json({ error: err.code }));
 });
 
 //SAVE OR UPDATE BUDGET
@@ -44,27 +39,19 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
         dashboard.totalSpent = saveDashboard.totalSpent;
         dashboard.totalRemaining = saveDashboard.totalRemaining;
         dashboard.people = saveDashboard.people;
-
         dashboard
           .save()
-          .then(() => {
-            res.status(201).json(dashboard);
-          })
+          .then(() => res.status(201).json(dashboard))
           .catch(err => console.log(err));
       } else {
         const newDashboard = new Dashboard({ ...saveDashboard });
         newDashboard
           .save()
-          .then(doc => {
-            res.status(201).json(doc);
-          })
+          .then(doc => res.status(201).json(doc))
           .catch(err => console.log(err));
       }
     })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({ error: err.code });
-    });
+    .catch(err => res.status(500).json({ error: err.code }));
 });
 
 module.exports = router;

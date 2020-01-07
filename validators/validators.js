@@ -4,7 +4,6 @@ const validator = require('validator');
 
 exports.validateRegisterData = user => {
   const errors = {};
-
   if (isEmpty(user.email)) {
     errors.email = 'Email can not be empty';
   } else if (!validator.isEmail(user.email)) {
@@ -13,15 +12,12 @@ exports.validateRegisterData = user => {
   if (isEmpty(user.password)) {
     errors.password = 'Password can not be empty';
   }
-
   if (user.password !== user.confirmPassword) {
     errors.password = 'Passwords must match';
   }
-
   if (isEmpty(user.username)) {
     errors.username = 'Username can not be empty';
   }
-
   return {
     errors,
     isValid: isEmpty(errors)
@@ -30,7 +26,6 @@ exports.validateRegisterData = user => {
 
 exports.validateLoginData = user => {
   const errors = {};
-
   if (isEmpty(user.email)) {
     errors.email = 'Email can not be empty';
   }

@@ -41,9 +41,7 @@ router.post('/register', (req, res) => {
               userCredentials.password = hash;
               userCredentials
                 .save()
-                .then(user => {
-                  res.status(201).json(user);
-                })
+                .then(user => res.status(201).json(user))
                 .catch(err => console.log(err));
             });
           });
@@ -53,6 +51,7 @@ router.post('/register', (req, res) => {
   });
 });
 
+//LOGIN USER
 router.post('/login', (req, res) => {
   const userDetails = {
     email: req.body.email,
@@ -77,7 +76,6 @@ router.post('/login', (req, res) => {
           id: user.id,
           username: user.username
         };
-
         jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 2155926 }, (err, token) => {
           if (err) {
             console.log(err);
