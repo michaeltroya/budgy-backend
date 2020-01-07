@@ -13,19 +13,36 @@ const DashboardSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  totalSpent: {
+    type: Number,
+    default: 0
+  },
   totalRemaining: {
     type: Number,
     default: 0
   },
-  person: [
+  people: [
     {
       name: String,
-      budget: Number,
-      remaining: Number,
+      budget: {
+        type: Number,
+        default: 0
+      },
+      spent: {
+        type: Number,
+        default: 0
+      },
+      remaining: {
+        type: Number,
+        default: 0
+      },
       items: [
         {
           itemName: String,
-          itemCost: Number
+          itemCost: {
+            type: Number,
+            default: 0
+          }
         }
       ]
     }

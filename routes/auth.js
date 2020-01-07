@@ -1,10 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const passport = require('../config/passport');
 const User = require('../models/User');
 const validators = require('../validators/validators');
 
@@ -33,6 +31,9 @@ router.post('/register', (req, res) => {
         } else {
           const userCredentials = new User({ username: req.body.username, email: req.body.email, password: req.body.password });
           bcrypt.genSalt(10, (err, salt) => {
+            if (err) {
+              console.log(err);
+            }
             bcrypt.hash(userCredentials.password, salt, (err, hash) => {
               if (err) {
                 console.log(err);
@@ -81,7 +82,7 @@ router.post('/login', (req, res) => {
           if (err) {
             console.log(err);
           }
-          res.status(201).json({ success: true, token: `Bearer ${token}` });
+          res.status(201).json({ token: `Bearer ${token}` });
         });
       }
     });

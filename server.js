@@ -4,14 +4,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 
+require('./config/passport')(passport);
+
 //ROUTES IMPORTS
 const dashboardRoutes = require('./routes/dashboard');
 const authRoutes = require('./routes/auth');
-
-//MODEL IMPORTS
-const User = require('./models/User');
-
-require('./config/passport')(passport);
 
 //MIDDLEWARE
 const app = express();
