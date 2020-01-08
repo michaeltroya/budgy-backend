@@ -12,8 +12,10 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
     user: { username }
   } = req;
 
-  Dashboard.findOne({ username })
-    .then(dashboard => res.json(dashboard))
+  Dashboard.findOne({ username }, '-_id -__v -people._id -people.items._id')
+    .then(dashboard => {
+      res.json(dashboard);
+    })
     .catch(err => res.status(500).json({ error: err.code }));
 });
 
@@ -25,7 +27,6 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
 
   const saveDashboard = {
     username,
-    createdAt: new Date().toISOString(),
     totalBudget: req.body.totalBudget,
     totalSpent: req.body.totalSpent,
     totalRemaining: req.body.totalRemaining,
