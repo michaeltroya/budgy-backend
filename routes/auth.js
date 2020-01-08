@@ -23,13 +23,17 @@ router.post('/register', (req, res) => {
 
   User.findOne({ username: newUser.username }).then(user => {
     if (user) {
-      res.status(400).json({ username: 'Username already in use' });
+      return res.status(400).json({ username: 'Username already in use' });
     } else {
       User.findOne({ email: newUser.email }).then(user => {
         if (user) {
-          res.status(400).json({ email: 'Email already in use' });
+          return res.status(400).json({ email: 'Email already in use' });
         } else {
-          const userCredentials = new User({ username: req.body.username, email: req.body.email, password: req.body.password });
+          const userCredentials = new User({
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password
+          });
           bcrypt.genSalt(10, (err, salt) => {
             if (err) {
               console.log(err);
@@ -41,7 +45,18 @@ router.post('/register', (req, res) => {
               userCredentials.password = hash;
               userCredentials
                 .save()
-                .then(user => res.status(201).json(user))
+                .then(user => {
+                  const payload = {
+                    id: user.id,
+                    username: user.username
+                  };
+                  jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1000 }, (err, token) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                    return res.status(201).json({ token: `${token}` });
+                  });
+                })
                 .catch(err => console.log(err));
             });
           });
@@ -61,26 +76,26 @@ router.post('/login', (req, res) => {
   const { errors, isValid } = validators.validateLoginData(userDetails);
 
   if (!isValid) {
-    res.status(400).json(errors);
+    return res.status(400).json(errors);
   }
 
   User.findOne({ email: userDetails.email }).then(user => {
     if (!user) {
-      res.status(403).json({ general: 'Incorrect email or password, please try again.' });
+      return res.status(403).json({ general: 'Incorrect email or password, please try again.' });
     }
     bcrypt.compare(userDetails.password, user.password).then(isMatch => {
       if (!isMatch) {
-        res.status(403).json({ general: 'Incorrect email or password, please try again.' });
+        return res.status(403).json({ general: 'Incorrect email or password, please try again.' });
       } else {
         const payload = {
           id: user.id,
           username: user.username
         };
-        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 2155926 }, (err, token) => {
+        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1000 }, (err, token) => {
           if (err) {
             console.log(err);
           }
-          res.status(201).json({ token: `Bearer ${token}` });
+          return res.status(201).json({ token: `${token}` });
         });
       }
     });
