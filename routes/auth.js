@@ -50,11 +50,11 @@ router.post('/register', (req, res) => {
                     id: user.id,
                     username: user.username
                   };
-                  jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1000 }, (err, token) => {
+                  jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 10000 }, (err, token) => {
                     if (err) {
                       console.log(err);
                     }
-                    return res.status(201).json({ token: `${token}` });
+                    return res.status(201).json({ username: userCredentials.username, token: `${token}` });
                   });
                 })
                 .catch(err => console.log(err));
@@ -91,11 +91,11 @@ router.post('/login', (req, res) => {
           id: user.id,
           username: user.username
         };
-        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 1000 }, (err, token) => {
+        jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 10000 }, (err, token) => {
           if (err) {
             console.log(err);
           }
-          return res.status(201).json({ token: `${token}` });
+          return res.status(201).json({ username: user.username, token: `${token}` });
         });
       }
     });

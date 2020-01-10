@@ -8,11 +8,9 @@ const Dashboard = require('../models/Dashboard');
 
 //GET BUDGET
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const {
-    user: { username }
-  } = req;
+  const { user } = req;
 
-  Dashboard.findOne({ username }, '-_id -__v -people._id -people.items._id')
+  Dashboard.findOne({ username: user }, '-_id -__v -people._id -people.items._id')
     .then(dashboard => {
       res.json(dashboard);
     })
@@ -21,19 +19,17 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
 
 //SAVE OR UPDATE BUDGET
 router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
-  const {
-    user: { username }
-  } = req;
+  const { user } = req;
 
   const saveDashboard = {
-    username,
+    username: user,
     totalBudget: req.body.totalBudget,
     totalSpent: req.body.totalSpent,
     totalRemaining: req.body.totalRemaining,
     people: req.body.people
   };
 
-  Dashboard.findOne({ username })
+  Dashboard.findOne({ username: user })
     .then(dashboard => {
       if (dashboard) {
         dashboard.totalBudget = saveDashboard.totalBudget;

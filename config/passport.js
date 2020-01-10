@@ -16,7 +16,7 @@ module.exports = passport => {
           return done(err, false);
         }
         if (user) {
-          return done(null, user);
+          return done(null, jwt_payload.username);
         } else {
           return done(null, false);
         }

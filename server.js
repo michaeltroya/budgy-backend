@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
 
-require('./config/passport')(passport);
-
 //ROUTES IMPORTS
 const dashboardRoutes = require('./routes/dashboard');
 const authRoutes = require('./routes/auth');
@@ -15,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+require('./config/passport')(passport);
 
 //ROUTES MIDDLEWARE
 app.use('/api/dashboard', dashboardRoutes);
