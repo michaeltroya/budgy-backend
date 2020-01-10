@@ -12,12 +12,12 @@ router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => 
 
   Dashboard.findOne({ username: user }, '-_id -__v -people._id -people.items._id')
     .then(dashboard => {
-      res.json(dashboard);
+      res.status(201).json(dashboard);
     })
     .catch(err => res.status(500).json({ error: err.code }));
 });
 
-//SAVE OR UPDATE BUDGET
+//SAVE BUDGET
 router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { user } = req;
 
@@ -31,22 +31,14 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
 
   Dashboard.findOne({ username: user })
     .then(dashboard => {
-      if (dashboard) {
-        dashboard.totalBudget = saveDashboard.totalBudget;
-        dashboard.totalSpent = saveDashboard.totalSpent;
-        dashboard.totalRemaining = saveDashboard.totalRemaining;
-        dashboard.people = saveDashboard.people;
-        dashboard
-          .save()
-          .then(() => res.status(201).json(dashboard))
-          .catch(err => console.log(err));
-      } else {
-        const newDashboard = new Dashboard({ ...saveDashboard });
-        newDashboard
-          .save()
-          .then(doc => res.status(201).json(doc))
-          .catch(err => console.log(err));
-      }
+      dashboard.totalBudget = saveDashboard.totalBudget;
+      dashboard.totalSpent = saveDashboard.totalSpent;
+      dashboard.totalRemaining = saveDashboard.totalRemaining;
+      dashboard.people = saveDashboard.people;
+      dashboard
+        .save()
+        .then(doc => res.status(201).json(doc))
+        .catch(err => console.log(err));
     })
     .catch(err => res.status(500).json({ error: err.code }));
 });

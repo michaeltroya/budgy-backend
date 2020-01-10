@@ -4,6 +4,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Dashboard = require('../models/Dashboard');
 const validators = require('../validators/validators');
 
 //REGISTER USER
@@ -13,6 +14,14 @@ router.post('/register', (req, res) => {
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword
+  };
+
+  const saveNewDashboard = {
+    username: req.body.username,
+    totalBudget: 0,
+    totalSpent: 0,
+    totalRemaining: 0,
+    people: []
   };
 
   const { errors, isValid } = validators.validateRegisterData(newUser);
@@ -53,8 +62,15 @@ router.post('/register', (req, res) => {
                   jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 10000 }, (err, token) => {
                     if (err) {
                       console.log(err);
+                    } else {
+                      const newDashboard = new Dashboard({ ...saveNewDashboard });
+                      newDashboard
+                        .save()
+                        .then(() =>
+                          res.status(201).json({ username: userCredentials.username, token: `${token}` })
+                        )
+                        .catch(err => console.log(err));
                     }
-                    return res.status(201).json({ username: userCredentials.username, token: `${token}` });
                   });
                 })
                 .catch(err => console.log(err));
