@@ -66,9 +66,7 @@ router.post('/register', (req, res) => {
                       const newDashboard = new Dashboard({ ...saveNewDashboard });
                       newDashboard
                         .save()
-                        .then(() =>
-                          res.status(201).json({ username: userCredentials.username, token: `${token}` })
-                        )
+                        .then(() => res.status(201).json({ token: `${token}` }))
                         .catch(err => console.log(err));
                     }
                   });

@@ -10,7 +10,7 @@ const Dashboard = require('../models/Dashboard');
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { user } = req;
 
-  Dashboard.findOne({ username: user }, '-_id -__v -people._id -people.items._id')
+  Dashboard.findOne({ username: user })
     .then(dashboard => {
       res.status(201).json(dashboard);
     })
