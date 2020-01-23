@@ -6,18 +6,18 @@ const passport = require('passport');
 
 const Dashboard = require('../models/Dashboard');
 
-//GET BUDGET
+//GET DASHBOARD
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { user } = req;
 
-  Dashboard.findOne({ username: user })
+  Dashboard.findOne({ username: user }, '-_id -__v -people._id -people.items._id')
     .then(dashboard => {
       res.status(201).json(dashboard);
     })
     .catch(err => res.status(500).json({ error: err.code }));
 });
 
-//SAVE BUDGET
+//SAVE DASHBOARD
 router.post('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { user } = req;
 
