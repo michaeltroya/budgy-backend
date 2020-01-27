@@ -19,8 +19,6 @@ router.post('/register', (req, res) => {
   const saveNewDashboard = {
     username: req.body.username,
     totalBudget: 0,
-    totalSpent: 0,
-    totalRemaining: 0,
     people: []
   };
 

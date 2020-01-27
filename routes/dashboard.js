@@ -24,16 +24,12 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
   const saveDashboard = {
     username: user,
     totalBudget: req.body.totalBudget,
-    totalSpent: req.body.totalSpent,
-    totalRemaining: req.body.totalRemaining,
     people: req.body.people
   };
 
   Dashboard.findOne({ username: user })
     .then(dashboard => {
       dashboard.totalBudget = saveDashboard.totalBudget;
-      dashboard.totalSpent = saveDashboard.totalSpent;
-      dashboard.totalRemaining = saveDashboard.totalRemaining;
       dashboard.people = saveDashboard.people;
       dashboard
         .save()
