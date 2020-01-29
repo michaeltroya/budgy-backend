@@ -26,56 +26,56 @@ router.post('/register', (req, res) => {
 
   if (!isValid) {
     res.status(400).json(errors);
-  }
-
-  User.findOne({ username: newUser.username }).then(user => {
-    if (user) {
-      return res.status(400).json({ username: 'Username already in use' });
-    } else {
-      User.findOne({ email: newUser.email }).then(user => {
-        if (user) {
-          return res.status(400).json({ email: 'Email already in use' });
-        } else {
-          const userCredentials = new User({
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password
-          });
-          bcrypt.genSalt(10, (err, salt) => {
-            if (err) {
-              console.log(err);
-            }
-            bcrypt.hash(userCredentials.password, salt, (err, hash) => {
+  } else {
+    User.findOne({ username: newUser.username }).then(user => {
+      if (user) {
+        return res.status(400).json({ username: 'Username already in use' });
+      } else {
+        User.findOne({ email: newUser.email }).then(user => {
+          if (user) {
+            return res.status(400).json({ email: 'Email already in use' });
+          } else {
+            const userCredentials = new User({
+              username: req.body.username,
+              email: req.body.email,
+              password: req.body.password
+            });
+            bcrypt.genSalt(10, (err, salt) => {
               if (err) {
                 console.log(err);
               }
-              userCredentials.password = hash;
-              userCredentials
-                .save()
-                .then(user => {
-                  const payload = {
-                    id: user.id,
-                    username: user.username
-                  };
-                  jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 10000 }, (err, token) => {
-                    if (err) {
-                      console.log(err);
-                    } else {
-                      const newDashboard = new Dashboard({ ...saveNewDashboard });
-                      newDashboard
-                        .save()
-                        .then(() => res.status(201).json({ token: `${token}` }))
-                        .catch(err => console.log(err));
-                    }
-                  });
-                })
-                .catch(err => console.log(err));
+              bcrypt.hash(userCredentials.password, salt, (err, hash) => {
+                if (err) {
+                  console.log(err);
+                }
+                userCredentials.password = hash;
+                userCredentials
+                  .save()
+                  .then(user => {
+                    const payload = {
+                      id: user.id,
+                      username: user.username
+                    };
+                    jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: 10000 }, (err, token) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        const newDashboard = new Dashboard({ ...saveNewDashboard });
+                        newDashboard
+                          .save()
+                          .then(() => res.status(201).json({ token: `${token}` }))
+                          .catch(err => console.log(err));
+                      }
+                    });
+                  })
+                  .catch(err => console.log(err));
+              });
             });
-          });
-        }
-      });
-    }
-  });
+          }
+        });
+      }
+    });
+  }
 });
 
 //LOGIN USER
