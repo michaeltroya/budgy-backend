@@ -49,3 +49,18 @@ exports.validateLoginData = user => {
     isValid: isEmpty(errors)
   };
 };
+
+exports.validateDashboardData = dashboard => {
+  const errors = {};
+
+  if (isEmpty(dashboard.totalBudget)) {
+    errors.dashboard = 'Total budget can not be empty';
+  } else if (isNaN(dashboard.totalBudget)) {
+    errors.dashboard = 'Invalid format';
+  }
+
+  return {
+    errors,
+    isValid: isEmpty(errors)
+  };
+};

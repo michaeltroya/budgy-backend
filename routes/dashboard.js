@@ -6,6 +6,8 @@ const passport = require('passport');
 
 const Dashboard = require('../models/Dashboard');
 
+const validators = require('../validators/validators');
+
 //GET DASHBOARD
 router.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
   const { user } = req;
@@ -27,16 +29,22 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
     people: req.body.people
   };
 
-  Dashboard.findOne({ username: user })
-    .then(dashboard => {
-      dashboard.totalBudget = saveDashboard.totalBudget;
-      dashboard.people = saveDashboard.people;
-      dashboard
-        .save()
-        .then(doc => res.status(201).json(doc))
-        .catch(err => console.log(err));
-    })
-    .catch(err => res.status(500).json({ error: err.code }));
+  const { errors, isValid } = validators.validateDashboardData(saveDashboard);
+
+  if (!isValid) {
+    res.status(400).json(errors);
+  } else {
+    Dashboard.findOne({ username: user })
+      .then(dashboard => {
+        dashboard.totalBudget = saveDashboard.totalBudget;
+        dashboard.people = saveDashboard.people;
+        dashboard
+          .save()
+          .then(doc => res.status(201).json(doc))
+          .catch(err => console.log(err));
+      })
+      .catch(err => res.status(500).json({ error: err.code }));
+  }
 });
 
 module.exports = router;
