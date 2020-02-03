@@ -57,6 +57,8 @@ exports.validateDashboardData = dashboard => {
     errors.totalBudget = 'Total budget can not be empty';
   } else if (isNaN(dashboard.totalBudget)) {
     errors.totalBudget = 'Invalid Budget';
+  } else if (dashboard.totalBudget < 0) {
+    errors.totalBudget = 'Invalid Budget';
   }
 
   for (let i = 0; i < dashboard.people.length; i++) {
@@ -67,6 +69,8 @@ exports.validateDashboardData = dashboard => {
     if (isEmpty(dashboard.people[i].budget)) {
       errors.peopleBudget = 'Budget can not be empty';
     } else if (isNaN(dashboard.people[i].budget)) {
+      errors.peopleBudget = 'Invalid price';
+    } else if (dashboard.people[i].budget < 0) {
       errors.peopleBudget = 'Invalid price';
     }
   }
@@ -81,6 +85,8 @@ exports.validateDashboardData = dashboard => {
       if (isEmpty(items[j].itemCost)) {
         errors.itemCost = 'Item price can not be empty';
       } else if (isNaN(items[j].itemCost)) {
+        errors.itemCost = 'Invalid price';
+      } else if (items[j].itemCost < 0) {
         errors.itemCost = 'Invalid price';
       }
     }
